@@ -31,23 +31,8 @@ app.controller('PlayerCtrl', function($scope, $rootScope, PlayerFactory){
   function play(event, song) {
 	  PlayerFactory.play(event, song, $scope, audio);
   }
-  
-  /*
-  function play (event, song){
-    // stop existing audio (e.g. other song) in any case
-    pause();
-    $scope.playing = true;
-    // resume current song
-    if (song === $scope.currentSong) return audio.play();
-    // enable loading new song
-    $scope.currentSong = song;
-    audio.src = song.audioUrl;
-    audio.load();
-    audio.play();
-  }
-  */
   // outgoing events (to Album)
-  $scope.next = function(){ $rootScope.$broadcast('next'); };
-  $scope.prev = function(){ $rootScope.$broadcast('prev'); };
+  $scope.next = function(){ PlayerFactory.next($rootScope) };
+  $scope.prev = function(){ PlayerFactory.prev($rootScope) };
 
 });

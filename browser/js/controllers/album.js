@@ -21,7 +21,7 @@ app.factory('StatsFactory', function ($q) {
 
 
 
-app.controller('AlbumCtrl', function($scope, $http, $rootScope, StatsFactory) {
+app.controller('AlbumCtrl', function($scope, $http, $rootScope, StatsFactory, PlayerFactory) {
 
   // load our initial data
   $http.get('/api/albums/')
@@ -50,22 +50,22 @@ app.controller('AlbumCtrl', function($scope, $http, $rootScope, StatsFactory) {
   // incoming events (from Player, toggle, or skip)
   $scope.$on('pause', pause);
   $scope.$on('play', play);
-  $scope.$on('next', next);
-  $scope.$on('prev', prev);
+//  $scope.$on('next', next);
+//  $scope.$on('prev', prev);
 
   // functionality
   function pause () {
-    $scope.playing = false;
+	 PlayerFactory.pause($scope, audio);
   }
   function play (event, song){
-    $scope.playing = true;
-    $scope.currentSong = song;
+	  PlayerFactory.play(event, song, $scope, audio);
   };
 
   // a "true" modulo that wraps negative to the top of the range
   function mod (num, m) { return ((num%m)+m)%m; };
 
   // jump `val` spots in album (negative to go back)
+  /*
   function skip (val) {
     if (!$scope.currentSong) return;
     var idx = $scope.album.songs.indexOf($scope.currentSong);
@@ -74,5 +74,6 @@ app.controller('AlbumCtrl', function($scope, $http, $rootScope, StatsFactory) {
   };
   function next () { skip(1); };
   function prev () { skip(-1); };
+  */
 
 });

@@ -3,9 +3,9 @@ app.factory('PlayerFactory', function($q) {
 	playerHelper.pause = function($scope, audio) {
 	    audio.pause();
 	    $scope.playing = false;
+	   $scope.$digest();
 	 }
 	playerHelper.play = function(event, song, $scope, audio) {
-		console.log('event', event, 'song', song, 'scope', $scope);
  	   // stop existing audio (e.g. other song) in any case
  	   playerHelper.pause($scope, audio);
  	   $scope.playing = true;
@@ -16,6 +16,23 @@ app.factory('PlayerFactory', function($q) {
  	   audio.src = song.audioUrl;
  	   audio.load();
  	   audio.play();
-	}
+	   $scope.$digest();
+	} 
+	playerHelper.next = function(){ next() };
+	playerHelper.prev = function($rootScope){ $rootScope.$broadcast('prev'); };
+
+  function mod (num, m) { return ((num%m)+m)%m; };
+
+  function skip (val) {
+    if (!$scope.currentSong) return;
+    var idx = $scope.album.songs.indexOf($scope.currentSong);
+    idx = mod( (idx + (val || 1)), $scope.album.songs.length );
+    $rootScope.$broadcast('play', $scope.album.songs[idx]);
+  };
+  function next () { skip(1); };
+  function prev () { skip(-1); };
+
+
+
 	return playerHelper;
 });
