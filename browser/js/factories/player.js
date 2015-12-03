@@ -1,39 +1,41 @@
 app.factory('PlayerFactory', function($q) {
 	var playerHelper = {};
-	playerHelper.pause = function($scope, audio) {
+  	var audio = document.createElement('audio');
+  	playerHelper.playlist = [];
+  	playerHelper.playing = false;
+  	playerHelper.currentSong;
+  	playerHelper.setPlaylist = function(newPlaylist){
+  		playerHelper.playlist = newPlaylist;
+  	}
+
+	playerHelper.pause = function() {
 	    audio.pause();
-	    $scope.playing = false;
-	   $scope.$digest();
+	    playerHelper.playing = false;
 	 }
-	playerHelper.play = function(event, song, $scope, audio) {
+	playerHelper.play = function(song) {
  	   // stop existing audio (e.g. other song) in any case
- 	   playerHelper.pause($scope, audio);
- 	   $scope.playing = true;
+ 	   playerHelper.pause();
+ 	   playerHelper.playing = true;
  	   // resume current song
- 	   if (song === $scope.currentSong) return audio.play();
+ 	   if (song === playerHelper.currentSong) return audio.play();
  	   // enable loading new song
- 	   $scope.currentSong = song;
+ 	   playerHelper.currentSong = song;
+
  	   audio.src = song.audioUrl;
  	   audio.load();
  	   audio.play();
-	   $scope.$digest();
 	} 
-	playerHelper.next = function(){ next($scope, audo) };
-	playerHelper.prev = function($rootScope){ $rootScope.$broadcast('prev'); };
+	playerHelper.next = function(){ skip(1); };
+	playerHelper.prev = function(){ skip(-1); };
 
   function mod (num, m) { return ((num%m)+m)%m; };
 
-  function skip (val, $scope, audio) {
-    if (!$scope.currentSong) return;
-    var idx = $scope.album.songs.indexOf($scope.currentSong);
-    idx = mod( (idx + (val || 1)), $scope.album.songs.length );
-    //$rootScope.$broadcast('play', $scope.album.songs[idx]);
-    playerHelper.play(null, $scope.album.songs[idx], $scope, audio);
+  function skip (val) {
+    if (!playerHelper.currentSong) return;
+    var idx = playerHelper.playlist.indexOf(playerHelper.currentSong);
+    idx = mod( (idx + (val || 1)), playerHelper.playlist.length );
+    playerHelper.play(playerHelper.playlist[idx]);
   };
-  function next ($scope, audio) { skip(1, $scope, audio); };
-  function prev ($scope, audio) { skip(-1, $scope, audio); };
-
-
 
 	return playerHelper;
 });
