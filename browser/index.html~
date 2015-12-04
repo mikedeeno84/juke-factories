@@ -9,23 +9,47 @@
   <script src="/js/module.js" defer></script>
   <script src="/js/controllers/album.js" defer></script>
   <script src="/js/controllers/player.js" defer></script>
+  <script src="/js/controllers/sideBar.js" defer></script>
   <script src="/js/factories/player.js" defer></script>
+  <script src="/js/factories/LoadFactory.js" defer></script>
+
 </head>
 <body ng-app="juke">
-	<div id="main" class="container-fluid">
+	<div id="main" class="container-fluid" ng-controller='loadMusic'>   
 
 		<div class="col-xs-2">
 			<sidebar>
         <img src="juke.svg" class="logo">
 				<section>
 					<h4 class="playlist-item active">
-						<a href="#">ALBUMS</a>
+						<a href="#" ng-click='displayAlbums(); showAlbums = true'>ALBUMS</a>
 					</h4>
 				</section>
 			</sidebar>
 		</div>
 
 		<div class="col-xs-10">
+
+      <div>
+    <h3>Albums</h3>
+    <div class="row">
+        <div class="col-xs-4" ng-repeat='album in albumArr'>
+            <a class="thumbnail" href="#">
+		    <img ng-src='{{album.imgUrl}}'>
+                <div class="caption">
+                    <h5>
+			    <span>{{album.name}}</span>
+                    </h5>
+		    <small>{{album.songs.length}} song<span ng-hide='album.songs.length === 1'>s</span></small>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+</div>
+
+
+	<div id='singleAlbum' ng-hide=true>
       <div class="album" ng-controller="AlbumCtrl">
           <p>
               <h3>{{ album.name }}</h3>
@@ -42,10 +66,10 @@
                   </tr>
               </thead>
               <tbody>
-                  <tr ng-repeat="song in album.songs" ng-class="{active: song === currentSong}">
+                  <tr ng-repeat="song in album.songs" ng-class="{active: song._id === getCurrentSongId()}">
                       <td>
                           <button class="btn btn-default btn-xs" ng-click="toggle(song)">
-                              <span class="glyphicon" ng-class="{'glyphicon-pause': playing && song === currentSong, 'glyphicon-play': song !== currentSong || !playing}"></span>
+                              <span class="glyphicon" ng-class="{'glyphicon-pause': isPlaying() && song._id === getCurrentSongId(), 'glyphicon-play': song._id !== getCurrentSongId() || !isPlaying()}"></span>
                           </button>
                       </td>
                       <td>{{ song.name }}</td>
@@ -55,16 +79,17 @@
               </tbody>
           </table>
       </div>
+      </div>
     </div>
 
 		<footer>
-      <div ng-show="currentSong" ng-controller="PlayerCtrl">
+      <div ng-show=true ng-controller="PlayerCtrl">
           <div class="pull-left">
               <button class="btn btn-default" ng-click="prev()">
                   <span class="glyphicon glyphicon-step-backward"></span>
               </button>
-              <button class="btn btn-default" ng-click="toggle(currentSong)">
-                  <span class="glyphicon" ng-class="{'glyphicon-pause': playing, 'glyphicon-play': !playing}"></span>
+              <button class="btn btn-default" ng-click="toggle(getCurrentSong())">
+                  <span class="glyphicon" ng-class="{'glyphicon-pause': isPlaying(), 'glyphicon-play': !isPlaying()}"></span>
               </button>
               <button class="btn btn-default" ng-click="next()">
                   <span class="glyphicon glyphicon-step-forward"></span>
