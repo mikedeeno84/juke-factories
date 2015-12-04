@@ -47,8 +47,9 @@ app.controller('AlbumCtrl', function($scope, $http, $rootScope, StatsFactory, Pl
     if ($scope.isPlaying()) PlayerFactory.pause();
     else PlayerFactory.play(song, $scope);
   }
-  $scope.getCurrentSong = function (){
-    return PlayerFactory.currentSong;
+  $scope.getCurrentSongId = function (){
+    if (typeof PlayerFactory.currentSong === "undefined") return -1
+    else return PlayerFactory.currentSong._id
   }
 
   $scope.isPlaying = function (){

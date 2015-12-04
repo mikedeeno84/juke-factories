@@ -42,10 +42,10 @@
                   </tr>
               </thead>
               <tbody>
-                  <tr ng-repeat="song in album.songs" ng-class="{active: song === getCurrentSong()}">
+                  <tr ng-repeat="song in album.songs" ng-class="{active: song._id === getCurrentSongId()}">
                       <td>
                           <button class="btn btn-default btn-xs" ng-click="toggle(song)">
-                              <span class="glyphicon" ng-class="{'glyphicon-pause': isPlaying() && song === getCurrentSong(), 'glyphicon-play': song !== getCurrentSong() || !isPlaying()}"></span>
+                              <span class="glyphicon" ng-class="{'glyphicon-pause': isPlaying() && song._id === getCurrentSongId(), 'glyphicon-play': song._id !== getCurrentSongId() || !isPlaying()}"></span>
                           </button>
                       </td>
                       <td>{{ song.name }}</td>
